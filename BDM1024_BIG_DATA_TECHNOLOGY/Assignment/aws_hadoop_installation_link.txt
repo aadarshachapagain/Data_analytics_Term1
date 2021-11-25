@@ -1,0 +1,94 @@
+ /home/hdoop/hadoop-2.10.1
+
+
+ubuntu@ec2-18-119-167-234.us-east-2.compute.amazonaws.com
+dns:ec2-18-119-167-234.us-east-2.compute.amazonaws.com
+public ipv4:18.118.189.212
+
+18.118.189.212 ip-172-31-7-135
+http://18.118.189.212:9870/
+http://18.118.189.212:8088/
+
+
+https://mirrors.estointernet.in/apache/hadoop/common/hadoop-2.10.1/hadoop-2.10.1.tar.gz
+
+ tar -xzf hadoop-2.10.1.tar.gz
+/usr/lib/jvm/java-8-openjdk-amd64
+
+
+/home/hdoop/hadoop-2.10.1
+
+sudo nano .bashrc
+
+export HADOOP_HOME=/home/hdoop/hadoop-2.10.1
+export HADOOP_INSTALL=$HADOOP_HOME
+export HADOOP_MAPRED_HOME=$HADOOP_HOME
+export HADOOP_COMMON_HOME=$HADOOP_HOME
+export HADOOP_HDFS_HOME=$HADOOP_HOME
+export YARN_HOME=$HADOOP_HOME
+export HADOOP_COMMON_LIB_NATIVE_DIR=$HADOOP_HOME/lib/native
+export PATH=$PATH:$HADOOP_HOME/sbin:$HADOOP_HOME/bin
+export HADOOP_OPTS="-Djava.library.path=$HADOOP_HOME/lib/native"
+export JAVA_HOME="/usr/lib/jvm/java-8-openjdk-amd64"
+
+#core-site
+<property>
+<name>hadoop.tmp.dir</name>
+<value>/home/hdoop/tmpdata</value>
+</property>
+<property>
+<name>fs.default.name</name>
+<value>hdfs://ec2-3-144-27-7.us-east-2.compute.amazonaws.com:9000</value>
+</property>
+
+#hdfs
+
+<property>
+	<name>dfs.data.dir</name>
+	<value>/home/hdoop/dfsdata/namenode</value>
+</property>
+<property>
+	<name>dfs.data.dir</name>
+	<value>/home/hdoop/dfsdata/datanode</value>
+</property>
+<property>
+	<name>dfs.replication</name>
+	<value>1</value>
+</property>
+
+#mapred
+<configuration>
+<property>
+	<name>mapreduce.jobtracker.address</name>
+	<value>ec2-3-144-27-7.us-east-2.compute.amazonaws.com:54311</value>
+</property>
+<property>
+	<name>mapreduce.framework.name</name>
+	<value>yarn</value>
+</property>
+</configuration>
+#yarn-site.xml
+
+<property>
+	<name>yarn.nodemanager.aux-services</name>
+	<value>mapreduce_shuffle</value>
+</property>
+<property>
+	<name>yarn.nodemanager.aux-services.mapreduce.shuffle.class</name>
+	<value>org.apache.hadoop.mapred.ShuffleHandler</value>
+</property>
+<property>
+	<name>yarn.resourcemanager.hostname</name>
+	<value>ec2-3-144-27-7.us-east-2.compute.amazonaws.com</value>
+</property>
+<property>
+	<name>yarn.acl.enable</name>
+	<value>0</value>
+</property>
+<property>
+	<name>yarn.nodemanager.env-whitelist</name>
+	<value>JAVA_HOME,HADOOP_COMMON_HOME,HADOOP_HDFS_HOME,HADOOP_CONF_DIR,CLASSPATH_PERPEND_DISTCACHE,HADOOP_YARN_HOME,HADOOP_MAPRED_HOME</value>
+</property>
+
+
+   

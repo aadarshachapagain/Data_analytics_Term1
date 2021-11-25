@@ -1,0 +1,71 @@
+
+
+
+A.Count number of countries based on landmass.
+flag_details = LOAD '/project/flag.data' USING PigStorage(',')
+   as (name:chararray, landmass:int, zone:int, area:float, population:int, language:int,religion:int, bars:int, stripes:int,  colours:int, 
+red:int, green:int, blue:int, gold:int, white:int, black:int, orange:int, mainhue:chararray, circles:int, crosses:int, saltires:int, quarters:int, sunstars:int, crescent:int, triangle:int ,icon:int, animate:int, text:int, topleft:chararray,botright:chararray);
+ 
+
+group_landmass = GROUP flag_details  by landmass;
+group_landmass_count = FOREACH group_landmass  GENERATE COUNT($1),(flag_details.landmass);
+Dump group_landmass_count;
+
+B.Find out top 5 country with Sum of bars and strips in a flag.
+
+bars_plus_stripe = FOREACH flag_details GENERATE (bars+stripes) as bars_stripe, name as name;
+bars_plus_stripe_ordered = ORDER bars_plus_stripe by bars_stripe DESC;
+top_bars_plus_stripe_ordered = Limit bars_plus_stripe_ordered 5;
+dump top_bars_plus_stripe_ordered
+
+
+C.Count of countries with icon.
+filter_with_icon = FILTER flag_details BY icon == 1;
+filter_with_icon_grp= Group filter_with_icon ALL;
+filter_with_icon_count = FOREACH filter_with_icon_grp  GENERATE COUNT(filter_with_icon.name);
+dump filter_with_icon_count;
+
+
+D.Count of countries which have same top left and top right color in flag
+filter_with_top = FILTER flag_details BY topleft == botright;
+filter_with_top_grp = Group filter_with_top All;
+filter_with_top_count = FOREACH filter_with_top_grp GENERATE COUNT(filter_with_top.name);
+dump filter_with_top_count;
+
+E.Count number of countries based on zone.
+group_zone = GROUP flag_details  by zone;
+group_zone_count =  FOREACH group_zone  GENERATE COUNT($1),(flag_details.zone);
+Dump group_zone_count;
+
+F.	Find out largest county in terms of area in NE zone.
+filter_with_area = FILTER flag_details BY zone == 1;
+filter_with_area_col = FOREACH filter_with_area  GENERATE (name), (area);
+filter_with_area_ordered = ORDER filter_with_area_col by area DESC;
+filter_with_area_ordered_top= limit filter_with_area_ordered 1;
+dump filter_with_area_ordered_top;
+
+G.Find out least populated country in S.America landmass.
+2=S.America,
+filter_with_landmass = FILTER flag_details BY landmass == 2;
+filter_with_landmass_col = FOREACH filter_with_landmass  GENERATE (name), (population);
+filter_with_landmass_ordered = ORDER filter_with_landmass_col by  population;
+filter_with_landmass_ordered_top= limit filter_with_landmass_ordered 20;
+dump filter_with_landmass_ordered_top;
+
+H.Find out largest speaking language among all countries.
+group_language = GROUP flag_details  by language;
+group_language_col= FOREACH group_language GENERATE SUM(flag_details. population) as population, (flag_details.language) as language;
+group_language_col_ordered = ORDER group_language_col by population DESC;
+largest_group_language_col_ordered = limit group_language_col_ordered  1;
+ dump largest_group_language_col_ordered;
+
+
+I.Find most common color among flags from all countries.
+
+grp_all = Group flag_details ALL;
+common_color = FOREACH grp_all GENERATE SUM(flag_details.red) as sum_red, SUM(flag_details.blue) as sum_blue, SUM(flag_details.gold) as gold, SUM(flag_details.black) as sum_black, SUM(flag_details.white), SUM(flag_details.orange) as sum_orange ;
+dump common_color;
+J.	Sum of all circles present in all country flags.
+grp_all = Group flag_details ALL;
+ sum_circles= FOREACH grp_all GENERATE SUM(flag_details.circles);
+dump sum_circles;

@@ -9,9 +9,10 @@ import numpy as np
 from sklearn import datasets, linear_model
 from sklearn.metrics import mean_squared_error, r2_score
 from sklearn.model_selection import train_test_split
+from sklearn.datasets import load_diabetes
 
 
-# In[13]:
+# In[2]:
 
 
 # Load the diabetes dataset, Diabetes data set is inbuilt dataset in sklearn
@@ -19,14 +20,14 @@ diabetes_X, diabetes_y = datasets.load_diabetes(return_X_y=True)
 diabetes_X.view()
 
 
-# In[14]:
+# In[3]:
 
 
 # Use only one feature
-diabetes_X = diabetes_X[:, np.newaxis, 2]
+#diabetes_X = diabetes_X[:, np.newaxis, 2]
 
 
-# In[15]:
+# In[13]:
 
 
 # Split the data into training/testing sets(80/20)
@@ -34,7 +35,7 @@ diabetes_X_train = diabetes_X[:-20]
 diabetes_X_test = diabetes_X[-20:]
 
 
-# In[16]:
+# In[14]:
 
 
 # Split the targets into training/testing sets(80/20)
@@ -42,28 +43,28 @@ diabetes_y_train = diabetes_y[:-20]
 diabetes_y_test = diabetes_y[-20:]
 
 
-# In[18]:
+# In[15]:
 
 
 # Create linear regression object
 regr = linear_model.LinearRegression()
 
 
-# In[19]:
+# In[16]:
 
 
 # Train the model using the training sets
 regr.fit(diabetes_X_train, diabetes_y_train)
 
 
-# In[21]:
+# In[17]:
 
 
 # Make predictions using the testing set
 diabetes_y_pred = regr.predict(diabetes_X_test)
 
 
-# In[22]:
+# In[20]:
 
 
 # The coefficients
@@ -74,12 +75,12 @@ print("Mean squared error: %.2f" % mean_squared_error(diabetes_y_test, diabetes_
 print("Coefficient of determination: %.2f" % r2_score(diabetes_y_test, diabetes_y_pred))
 
 
-# In[23]:
+# In[36]:
 
 
 # Plot outputs
-plt.scatter(diabetes_X_test, diabetes_y_test, color="black")
-plt.plot(diabetes_X_test, diabetes_y_pred, color="blue", linewidth=3)
+plt.scatter(diabetes_y_test, diabetes_y_pred, color="black")
+#plt.plot(diabetes_y_test, diabetes_y_pred, color="blue")
 
 
 # In[ ]:

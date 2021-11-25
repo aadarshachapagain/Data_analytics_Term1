@@ -1,0 +1,23 @@
+2.CREATE KEYSPACE groupA_Keyspace WITH replication = {'class': 'SimpleStrategy', 'replication_factor': '2'} 
+ AND durable_writes = true;
+
+CREATE TABLE employee ( id int, name text, salary double, department text,
+ Primary Key(department,salary, name));
+
+insert into employee (id, name, salary, department) values(2,'X', 4000 , 'HR');
+insert into employee (id, name, salary, department) values(3,'Y', 4000 , 'IT');
+insert into employee (id, name, salary, department) values(4,'Y', 4000 , 'IT');
+insert into employee (id, name, salary, department) values(5,'Y', 4000 , 'IT');
+
+update employee set id=2 where department='IT';
+
+create table tweets_count(user varchar PRIMARY KEY, tweets counter);
+
+insert into  tweets_count(user, counter) values('abc',20);
+
+67.update tweets_count set tweets=tweets+20 where user='abc';
+71. create table user_tweets(user varchar PRIMARY KEY, tweet varchar);
+insert into user_tweets(user, tweet) values('A', 'what a beautiful day');
+insert into user_tweets(user, tweet) values('C', 'sweet as honey') using TTL 60;
+
+72. select user, tweet, TTl(tweet) from user_tweets;

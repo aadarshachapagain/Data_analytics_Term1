@@ -1,0 +1,27 @@
+CREATE  TABLE book_xml(
+       title string,
+       genre  string,
+       price_discount double,
+       publish_date string,
+       description string
+     )
+     ROW FORMAT SERDE 'com.ibm.spss.hive.serde2.xml.XmlSerDe'
+     WITH SERDEPROPERTIES (
+     "column.xpath.title"="/book/title/text()",
+     "column.xpath.genre"="/book/genre/text()",
+     "column.xpath.price_discount"="/book/price discount/text()",
+     "column.xpath.publish_date"="/book/publish_date/text()",
+     "column.xpath.description"="/book/description/text()"
+     )
+     STORED AS
+     INPUTFORMAT 'com.ibm.spss.hive.serde2.xml.XmlInputFormat'
+     OUTPUTFORMAT 'org.apache.hadoop.hive.ql.io.IgnoreKeyTextOutputFormat'
+     TBLPROPERTIES (
+     "xmlinput.start"="<book ",
+     "xmlinput.end"="book/>"
+     )
+     ;
+
+
+LOAD DATA LOCAL INPATH 'home/hadoop/books.xml'
+ INTO TABLE book_xml;

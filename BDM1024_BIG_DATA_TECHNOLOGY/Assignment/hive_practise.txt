@@ -1,0 +1,150 @@
+
+Create  table staff_check(age int,
+length_of_service int,
+city_name string,
+department_name string,
+job_title string,
+gender_full string,
+STATUS string,
+BUSINESS_UNIT string)
+row format delimited fields terminated by   ',' stored as textfile tblproperties("skip.header.line.count"="1");
+
+
+
+
+
+Create  table staff_man(age int,
+length_of_service int,
+city_name string,
+department_name string,
+job_title string,
+gender_full,
+STATUS string,
+BUSINESS_UNIT string)
+row format delimited fields terminated by   ',' stored as textfile tblproperties("skip.header.line.count"="1");
+
+
+
+Create  table staff_ext_part(age int,
+length_of_service int,
+city_name string,
+department_name string,
+job_title string,
+STATUS string,
+BUSINESS_UNIT string)
+Partitioned by(gender_full string)
+row format delimited fields terminated by   ',' stored as textfile tblproperties("skip.header.line.count"="1");
+
+Load data inpath '/user/aadarsha/externaldata/sample_data.csv' into table staff_ext_part
+partition(gender_full='Male')
+
+select count(gender_full) from staff_ext_part where gender_full="Male"and length_of_service >15 and status="ACTIVE";
+
+
+
+
+
+
+Create external table staff_ext(age int,
+length_of_service int,
+city_name string,
+department_name string,
+job_title string,
+gender_full string,
+STATUS string,
+BUSINESS_UNIT string)
+row format delimited fields terminated by   ',' stored as textfile tblproperties("skip.header.line.count"="1");
+
+
+
+
+
+
+
+
+Create  table empl_static_part(age int,
+length_of_service int,
+city_name string,
+department_name string,
+job_title string,
+STATUS string,
+BUSINESS_UNIT string)
+Partitioned by(gender_full string)
+row format delimited fields terminated by   ',' stored as textfile tblproperties("skip.header.line.count"="1");
+
+Load data inpath '/user/aadarsha/externaldata/sample_data.csv' into table empl_static_part
+partition(gender_full='Male')
+
+
+Load data inpath '/user/aadarsha/externaldata/data_set_trimmed.csv' into table employeedata_ext
+
+Create external table employeedata_dyn_part(age int,
+length_of_service int,
+city_name string,
+department_name string,
+job_title string,
+STATUS string,
+BUSINESS_UNIT string)
+partitioned by (gender_full string)
+ row format delimited fields terminated by   ',' tblproperties("skip.header.line.count"="1") stored as textfile
+
+
+Create external table employeeData_ext(
+age int,
+length_of_service int,
+city_name string,
+department_name string,
+job_title string,
+gender_full string,
+status string,
+BUSINESS_UNIT string) row format delimited fields terminated by ','  stored as textfile  tblproperties("skip.header.line.count"="1");
+
+Create external table employeeData_ext(
+age int,
+length_of_service int,
+city_name string,
+department_name string,
+job_title string,
+gender_full string,
+status string,
+BUSINESS_UNIT string) row format delimited fields terminated by ','  stored as textfile  tblproperties("skip.header.line.count"="1");
+
+
+
+
+insert into table  empl_dyn_part partition(gender_full)
+select age,length_of_service, city_name, department_name,
+job_title, STATUS,BUSINESS_UNIT,gender_full  from emp_data_ext;
+
+
+Create external table emp_data_ext(
+age int,
+length_of_service int,
+city_name string,
+department_name string,
+job_title string,
+gender_full string,
+status string,
+BUSINESS_UNIT string) row format delimited fields terminated by ','  stored as textfile tblproperties("skip.header.line.count"="1");
+
+Create table staff_dynamic_part(
+age int,
+length_of_service int,
+city_name string,
+department_name string,
+job_title string,
+status string,
+business_unit string)
+partitioned by (gender_full string)
+ row format delimited fields terminated by ','  stored as textfile  tblproperties("skip.header.line.count"="1");
+
+
+
+insert into staff_dynamic_part partition(gender_full)
+select age, length_of_service, city_name, department_name,job_title,status,business_unit,gender_full
+from staff_ext
+
+
+select count(gender_full) from emp_data_ext where gender_full="Male"and length_of_service >15 and status="ACTIVE";
+
+

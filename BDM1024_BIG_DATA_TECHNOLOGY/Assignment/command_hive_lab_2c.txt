@@ -1,0 +1,63 @@
+create table employee_data(id int, name string, 
+compensation Map<string, int>)
+row format delimited
+fields terminated by ','
+collection items terminated by '$'
+map keys terminated by ':'
+Stored as textfile;
+
+
+Select name, compensation['salary'] + compensation['comm'] + compensation['bonus']
+ as totalcompensation from employee_data where name='Benjamin';
+
+Create external table salesjan2009_ext(productid string, salesamount int,
+paymenttype string, customername string, city string, region string, country string)
+
+Create external table salesjan2009_ext(productid string, salesamount int,
+paymenttype string, customername string, city string, region string,
+country string)
+row format delimited
+Fields terminated by ',';
+
+Create view sales_by_US_view as select *
+From salesjan2009_ext where country='United States';
+
+Select paymenttype, sum(salesamount) from sales_by_US_view group by paymenttype
+
+use test_db;
+Create  table salesjan2009_by_script(
+productid string, salesamount int,
+paymenttype string, customername string, city string, region string, country string)
+Row format delimited
+Fields terminated by ',' stored as textfile;
+Load data inpath '/user/aadarsha/SalesJan2009.csv' into table SalesJan2009_by_script;
+
+
+insert into salesjan2009_clustered
+select * from salesjan2009_ext;
+
+
+select country, count(*) as count from SalesJan2009_ext 
+group by (country)
+order by count
+
+create table salesjan2009_skewed(
+productid string,salesamount int,paymenttype string,customername string,city string,region string,country string)
+skewed by (country) on ('United States', 'United Kingdom') stored as directories
+row format delimited
+fields terminated by ',';
+
+insert into salesjan2009_skewed
+select * from salesjan2009_ext;
+
+
+ create table salesjan2009_parquet1(
+productid string,salesamount int,paymenttype string,customername string,city string,region string,country string)
+stored as PARQUET
+TBLPROPERTIES ("parquet.compress"="snappy");
+
+
+
+
+
+

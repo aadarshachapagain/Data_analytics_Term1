@@ -1,0 +1,28 @@
+/home/hdoop/pig-0.17.0
+
+/home/hdoop/sqoop-1.99.7-bin-hadoop200
+
+
+http://www.mirrorservice.org/sites/ftp.mysql.com/Downloads/Connector-J/mysql-connector-java-5.1.48.tar.gz
+
+ select user, authentication_string,plugin,host from mysql.user;
+
+ALTER USER 'root'@'localhost' IDENTIFIED with mysql_native_password BY '@Paradis3'
+
+/home/hdoop/apache-hive-3.1.2-bin
+
+cat  $HIVE_HOME/bin/hive-config.sh
+
+/home/hdoop/spark-2.4.5-bin-hadoop2.7
+
+spark-shell --conf spark.ui.port=4041
+
+/home/hdoop/kafka_2.12-2.7.1
+
+bin/zookeeper-server-start.sh config/zookeeper.properties
+
+bin/kafka-server-start.sh config/server.properties
+
+bin/kafka-topics.sh --bootstrap-server localhost:9092 --list
+
+
