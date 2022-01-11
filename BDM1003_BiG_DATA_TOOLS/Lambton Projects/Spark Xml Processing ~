@@ -1,0 +1,46 @@
+==========================================================================================================================================================================
+									Xml Processing with Maven
+==========================================================================================================================================================================
+
+1. create /home/venkateshwar/work/input
+
+2. create /home/venkateshwar/work/output
+
+3. Move the Tradedata.xml file to /home/venkateshwar/work/input/Tradedata.xml
+
+4. Prepare a scala program for XML Processing
+
+5. Open a scala IDE and create a new maven project and from configurations add scala nature to it.
+ 
+6. Add java build path and scala folder for applications.
+
+7. Create a scala object and include scala program for XML Processing
+
+8. Run scala program as configurations and provide the arguments for input and output, results will be saved to HDFS.
+
+9. Enter hive shell
+
+10.create table if not exists xmlprocessing(stock_id string, stock_name string, open_price int, intraday_high int, intraday_low int, publish_date string) row format delimited fields terminated by '\t' lines terminated by '\n' stored as textfile;
+
+11.load data inpath '/user/venkateshwar/xmls/tradedata.txt' overwrite into table xmlprocessing;
+
+12.Insert Overwrite Local Directory '/home/venkateshwar/xmls/hive_inputs/xmlprocessing.txt' ROW FORMAT DELIMITED FIELDS TERMINATED BY '\t' Select * from xmlprocessing;
+
+13. mysql -u root -p --local-infile
+
+14. Create Table xmlprocessing_export (stock_id VARCHAR(20), stock_name VARCHAR(40), open_price INT(20), intraday_high INT(20), intraday_low INT(20), publish_date INT(20));
+
+15. Load Data Local Infile '/home/venkateshwar/xmls/tradedata.txt' INTO TABLE xmlprocessing_export;
+
+16. select * from xmlprocessing_export;
+
+==========================================================================================================================================================================
+
+
+
+
+
+
+
+
+   

@@ -1,0 +1,187 @@
+
+======================================================================================================================================
+								SPARK
+======================================================================================================================================
+
+Spark is effective execution framework for large clusters such as YARN, Mesos, AWS.
+
+Spark has an execution model called "DAG" (Directed Acyclic Graphs), It maintains graph(links) of RDDS.
+
+
+Example of Graph Info:
+-----------------------
+1. Which RDd?
+2. Howmany Partitions?
+3. Addressof Partitions?
+4. Location ofPartitions(RAm/HD)?
+5. What is input RDD?
+
+This is similar to metadata of HDFS file.
+
+
+======================================================================================================================================
+								RDD
+======================================================================================================================================
+
+RDD: Resilient Distributed Dataset similar to HDFS Blocks. Small chunks of data.
+
+RDD: Immutable Distributed Collection of Objects. Its a core abstraction of Spark.
+
+RDD Split into multiple partitions, which may be compute on different nodes of the cluster.
+
+Default number of partitions =1
+
+In Spark for each block there will be two partitons.
+val someRDD = sc.parallelize( 1 to 100, 4)
+
+RDDS areDistributed into RAM's of Workers. If RAM space is unavailable then RDD's stored in Disk.
+
+RDD Properties: Immutable, Distributed, Lazily Evaluated, Cachable.
+
+
+Immutable: Once cretaed and assigned a value, it can't be altered. Spark is By default immutable, hence no updates or modifications.
+---------- 
+Distributed: Data(RDD) is Distributed accross differnet parallel computing nodes.
+------------
+Lazily Evaluated: It's not mandatory to evaluate a program immediately.
+-----------------
+Cachable: Keep all the data in-memory for computation, rather than going to the disk.
+---------
+
+Creating RDDS: 2 Ways
+---------------------
+1. Loading an external Dataset
+2. Distributing a Collection of Objects.
+
+val inputfile(RDD) = sc.textFile(“input.txt”)
+
+val data(RDD) = Array(4,6,7,8)
+val distData(RDD) = sc.parallelize(data)
+
+
+RDDs offers 2 types of operations
+---------------------------------
+1. Transformations (Map, Flatmap, Sort,..)
+2. Actions (Count, Collect, Take, saveAstextFile..)
+
+
+Once RDD stored in RAM, It will be available there till another RDD comes in.Later prior RDD will be moved to Disk.
+If any Action/transformation performed on the RDD, no need to be re computed.If RDD is in Disk, re compution required.
+
+
+When RDDs will be terminated from RAM?
+-------------------------------------
+1. When Next RDD Comes in
+2. When Flow Execution Completed.
+
+
+Ex:
+			RDD1
+			 !
+			 !		
+			RDD2
+			 !
+			 !
+			RDD3 (Persist)   !   
+			 !   
+			 !    !   
+			      !
+			RDD4  RDD5 
+					RDD6 (Persist) 
+					 !
+			 		 !
+				RDD7	RDD8	RDD9
+
+
+Here before action on RDd4, to keep regulary used RDD to RAM Permanently, keep the RDD in Persist Mode. Unpersist is to dissect RDD.
+
+When action is performed on RDD4, RDd1 to RDD4 will be loaded into RAm, once the flow is executed, Except RDD3 remaining RDDs will be removed from RAm.
+
+RDDs will be out of RAm when
+
+1. Unpersist
+2. Server Shutdown
+3. System Crash.
+
+
+
+
+
+Persistence Levels:
+-------------------
+MEMORY_ONLY
+MEMORY_ONLY_SER
+MEMORY_AND_DISK
+MEMORY_AND_DISK_SER, 
+DISK_ONLY
+OFF_HEAP
+
+
+MEMORY_ONLY: 
+------------
+MEMORY_ONLY_SER
+MEMORY_AND_DISK
+MEMORY_AND_DISK_SER, DISK_ONLY
+OFF_HEAP
+
+
+MEMORY_ONLY:
+-------------
+Store RDD as deserialized Java objects in the JVM. If the RDD does not fit in memory, some partitions will not be cached and 
+will be recomputed on the fly each time they're needed. This is the default level.
+
+
+MEMORY_AND_DISK:
+----------------
+Store RDD as deserialized Java objects in the JVM. If the RDD does not fit in memory, store the partitions that 
+don't fit on disk, and read them from there when they're needed.
+
+
+MEMORY_ONLY_SER:
+----------------
+Store RDD as serialized Java objects (one byte array per partition). This is generally more space-efficient than 
+deserialized objects.
+
+
+MEMORY_AND_DISK_SER:
+--------------------
+Similar to MEMORY_ONLY_SER, but spill partitions that don't fit in memory to disk instead of recomputing them on the 
+fly each time they're needed.
+
+
+DISK_ONLY:
+----------
+Store the RDD partitions only on disk.
+
+
+MEMORY_ONLY_2, MEMORY_AND_DISK_2, etc.
+
+Same as the levels above, but replicate each partition on two cluster nodes.
+
+
+OFF_HEAP (experimental):
+------------------------
+Store RDD in serialized format in Tachyon. Compared to MEMORY_ONLY_SER, OFF_HEAP reduces garbage collection overhead and 
+allows executors to be smaller and to share a pool of memory, making it attractive in environments with large heaps or 
+multiple concurrent applications. Furthermore, as the RDDs reside in Tachyon, the crash of an executor does not lead to 
+losing the in-memory cache. In this mode, the memory in Tachyon is discardable. Thus, Tachyon does not attempt to reconstruct a 
+block that it evicts from memory.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

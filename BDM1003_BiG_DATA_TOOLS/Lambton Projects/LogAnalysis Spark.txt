@@ -1,0 +1,163 @@
+
+=========================================================================================================================================================================
+										Log Analysis:
+=========================================================================================================================================================================
+
+Event_Logs:
+============
+1. spark-shell
+
+2. val eventlogs = sc.textFile("file:///home/venkateshwar/logs/event_log")
+   eventlogs.saveAsTextFile("hdfs://localhost:8020/user/venkateshwar/logs/eventlog.txt")
+
+3. hive
+
+4. create table if not exists eventlogs(dt string,ip string,country string,status string) row format delimited fields terminated by '|' lines terminated by '\n' stored as textfile;
+
+5. load data inpath '/user/venkateshwar/logs/eventlog.txt' overwrite into table eventlogs;
+
+6. Insert Overwrite Local Directory '/home/venkateshwar/logs/hive_inputs/eventlogs' ROW FORMAT DELIMITED FIELDS TERMINATED BY '\t' Select * from eventlogs;
+
+7. mysql -u root -p --local-infile
+
+8. Create Table eventlog_export (dt VARCHAR(20), ip VARCHAR(20), country VARCHAR(20), status CHAR(1));
+
+9. Load Data Local Infile '/home/venkateshwar/logs/eventlogs/000000_0' INTO TABLE eventlog_export;
+
+
+Sys_Logs:
+=========
+
+1. spark-shell
+
+2. val syslogs = sc.textFile("file:///home/venkateshwar/logs/sys_log")
+   syslogs.saveAsTextFile("hdfs://localhost:8020/user/venkateshwar/logs/syslog.txt")
+
+3. hive
+
+4. create table if not exists syslogs(ip string,country string) row format delimited fields terminated by '\t' lines terminated by '\n' stored as textfile;
+
+5. load data inpath '/user/venkateswar/logs/syslog.txt' overwrite into table syslogs;
+
+6. Insert Overwrite Local Directory '/home/venkateswar/logs/hive_inputs/syslogs' ROW FORMAT DELIMITED FIELDS TERMINATED BY '\t' Select * from syslogs;
+
+7. mysql -u root -p --local-infile
+
+8. create table syslog_export (ip VARCHAR(100),country VARCHAR(100));
+
+9. Load Data Local Infile '/home/venkateshwar/logs/syslogs/000000_0' INTO TABLE syslog_export;
+
+
+
+Web_Logs:
+=========
+1. spark-shell
+
+2. val weblogs = sc.textFile("file:///home/venkateshwar/logs/web_log")
+   weblogs.saveAsTextFile("hdfs://localhost:8020/user/venkateshwar/logs/weblog.txt")
+
+3. hive
+
+4. create table if not exists weblogs(userid string, url string, dt string, time string, ip string) row format delimited fields terminated by '\t' lines terminated by '\n' stored as textfile;
+
+5. load data inpath '/user/venkateswar/logs/weblog.txt' overwrite into table weblogs;
+
+6. Insert Overwrite Local Directory '/home/venkateshwar/logs/hive_inputs/weblogs' ROW FORMAT DELIMITED FIELDS TERMINATED BY '\t' Select * from weblogs limit 5000;
+
+7. mysql -u root -p --local-infile
+
+8. create table weblog_export(userid VARCHAR(64), url VARCHAR(100), dt VARCHAR(32), time VARCHAR(32), ip VARCHAR(32));
+
+9. Load Data Local Infile '/user/venkateshwar/logs/weblogs/000000_0' INTO TABLE weblog_export;
+
+=========================================================================================================================================================================
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+=========================================================================================================================================================================
+hdfs dfs -mkdir -p /user/venkateshwar/logs
+hdfs dfs -mkdir -p /user/venkateshwar/logs/hive_inputs
+
+=========================================================================================================================================================================
+INSERT OVERWRITE LOCAL DIRECTORY '/home/venkateshwar/logs/weblogs.txt' STORED AS TEXTFILE SELECT * FROM weblogs;
+==========================================================================================================================================================================
+
+hdfs dfs -mkdir -p /user/venkateshwar/logs
+hdfs dfs -mkdir -p /user/venkateshwar/logs/hive_inputs
+
+
+Event_Logs:
+============
+1. spark-shell
+
+2. val eventlogs = sc.textFile("file:///home/venkateshwar/logs/event_log")
+   eventlogs.saveAsTextFile("hdfs://localhost:8020/user/venkateshwar/logs/eventlog1.txt")
+
+3. hive 
+
+4. create external table if not exists eventlogs1(dt string,ip string,country string,status string) row format delimited fields terminated by '|' lines terminated by '\n' stored as textfile;
+
+5. load data inpath '/user/venkateshwar/logs/eventlog1.txt' overwrite into table eventlogs1;
+
+6. INSERT OVERWRITE LOCAL DIRECTORY '/home/venkateshwar/logs/eventlogs3.txt' ROW FORMAT DELIMITED FIELDS TERMINATED BY '\t' SELECT * FROM eventlogs1 limit 1000;
+
+7. mysql -u root -p --local-infile
+
+8. CREATE TABLE eventlog_export1 (dt VARCHAR(20), ip VARCHAR(20), country VARCHAR(20), status CHAR(1));
+
+9. LOAD DATA LOCAL INFILE '/home/venkateshwar/logs/eventlogs1.txt' INTO TABLE eventlog_export1;
+
+
+
+INSERT OVERWRITE LOCAL DIRECTORY '/home/lvermeer/temp' ROW FORMAT DELIMITED FIELDS TERMINATED BY '\t' select books from table;
+
+========================================================================================================================================================================
+
+
+
+//sqoop export --connect jdbc:mysql://localhost:3306/mysql --username root --password root123 --table eventlog_export1 --input-fields-terminated-by '\001' --input-lines-terminated-by '\n' --export-dir /user/venkateshwar/logs/hive-inputs/eventlogs1.txt
+
+
+sqoop export --connect jdbc:mysql://localhost:3306/mysql --username root --password root123 --table eventlog_export1 --input-fields-terminated-by '\001' --input-lines-terminated-by '\n' --export-dir /user/venkatehswar/logs/hive-inputs/eventlogs1/000000_0
+
+
+
+6. sqoop export --connect jdbc:mysql://localhost:3306/sqoop --username root --password root123 --table eventlog_export --input-fields-terminated-by '\|' --input-lines-terminated-by '\n' --export-dir /user/venkateswar/logs/hive-inputs/eventlogs
+
+
+//sqoop export --connect jdbc:mysql://localhost:3306/sqoop --username root --password root123 --table eventlog_export --input-fields-terminated-by '\t' --input-lines-terminated-by '\n' --export-dir /home/venkateswar/logs/eventlogs
+
+
+6. sqoop export --connect jdbc:mysql://localhost:3306/sqoop --username root --password root123 --table syslog_export --input-fields-terminated-by '\001' --input-lines-terminated-by '\n' --export-dir /user/venkateswar/logs/hive_inputs/syslogs
+
+
+
+//sqoop export --connect jdbc:mysql://localhost:3306/sqoop --username root --password root123 --table eventlog_export --input-fields-terminated-by '\t' --input-lines-terminated-by '\n' --export-dir /home/venkateswar/logs/eventlogs
+
+6. sqoop export --connect jdbc:mysql://localhost:3306/sqoop --username root --password root123 --table weblog_export --input-fields-terminated-by '\001' --input-lines-terminated-by '\n' --export-dir /user/venkateswar/logs/hive_inputs/weblogs
+
+
+
+
+
+
+

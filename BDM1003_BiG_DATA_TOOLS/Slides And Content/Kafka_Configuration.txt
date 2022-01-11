@@ -1,0 +1,83 @@
+
+Kafka Producer Configuration setup:
+===================================
+General Parameters
+acks - 0,1,-1
+	0 - dont wait for ack
+	1 - wait for leader only ack
+	all - wait for all the partitions to write messages and send ack
+Bootstrap servers
+A list of host/port pairs to estblish a connection to Kafka cluster
+host1:port1
+port for all SSL/TLS - 9093
+
+Buffer.Memory
+Total bytes of memory for buffer records waiting to send to the server
+in-flight rquets
+compression overheads
+
+Retries
+Client will try resending th emmessage
+ Range: 0 to 2147483647
+
+Batch.size
+The max byte size that client will create with messages
+Producer will attempt to batch records together whenever multiple records being sent to same partitions, results in fewwr connection requests.
+Batch size max is 8 mb - otherwise a bottle necks -  for  network connection
+
+Connections 
+Connections.max.idle.ms - Close idle connections after those many ms
+linger.ms - time taht client will hold off so that batch tries to fill the message
+max.block.ms  - max time client blocks for send() method if broker metadata is not foun dor the buffer memory is full (60000 - default)
+request.timeout.ms  - client try to resend messages till retries exhausted
+enable.idempotence  - exactly one copy of message written in the stream
+	max.in.flight.requests.per.connection - set o less than or equal to 5 and retries greater than 0
+max.in.flight.requests.per.connection  - max unack reqs client will send on a single connection before blocking
+metadata.max.age.ms  - max broker and topic metadata (30000 - default)
+reconnect.backoff.ms - wait before attempting to reconnet to a given host
+retry.backoff.ms  - wait before attempting to retry a failed requets
+
+
+SSL/TLS Parameters:
+
+security.protocol: SLL for Clients to broker
+ssl.truststore.location: SSL truststore file in the server
+ssl.truststore.password: password
+ssk.protocol: to generate SSLContext
+ssl.truststore.type: file format
+
+Since no Kerboros no need of ALL SASL based parameters
+
+
+
+Kafka Consumer Configuration Steps:
+
+kafka
+bootstrap.servers
+security.protocol=SASL-SSL
+sasl.jaas.config
+ssl.endpoint.identification.algorithom=https
+sasl.mechanism=PLAIN
+key.deserializer
+value.deserializer
+group.id
+
+
+No partition will be assigned to more than once consumer in the same group
+Consumers pull batches from the broker
+
+fetch.min.bytes=1
+fetch.max.wait.ms=500ms
+max.poll.records=500
+max.poll.interval.ms=5min
+auto.commit.interval.ms=5s
+heartbeat.interval.ms=3s
+session.timeout.ms=10s
+
+
+Consumer Offsets:
+
+Log and Offset:
+High Waternmark:
+Current Position:
+Last Committed Offset: 

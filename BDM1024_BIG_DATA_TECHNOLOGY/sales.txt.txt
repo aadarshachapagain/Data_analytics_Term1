@@ -1,0 +1,6 @@
+package org.aadarsha.training.sparksql.bean
+
+case class Sales(productId: String, salesAmount: Int, paymentType: String, customerName:String, 
+    city: String, region:String, country:String) {
+  
+}

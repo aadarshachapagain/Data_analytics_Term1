@@ -1,0 +1,22 @@
+
+Hive:
+1. Hive is not a Database
+2. Hive is for Data warehouse operations
+3. Hive is used for OLAP not for OLTP
+4. Hive has no Primary Key
+5. Hive language is 'HQL - Hive Query language'
+6. Hive Data Model (Tables, Partitions, Buckets)
+7. Hive Functions(UDF, UDAF, UDTF)
+8. Hive supports Serdes (Lazy Simple Serde, Json Serde, Regex Serde)
+9. Hive supports Indexes, Joins, Views.
+10. Hive data types (Primitive: Int, Float, Double,..)
+11. Hive Complex data Types or Collection Items (Array, Map, Union, Struct)
+12. Hive follows metastore concept
+13. Schema is mandatory for Hive
+14. Default field Separator (Ctrl A or )
+15. Default collection Items separator (Ctrl B or )
+16. Default Map Separator (Ctrl C or)
+17. Default line Separator (/n)
+18. Hive by default stored as textfile.
+
+

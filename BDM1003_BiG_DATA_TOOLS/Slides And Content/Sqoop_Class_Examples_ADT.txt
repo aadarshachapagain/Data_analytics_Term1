@@ -1,0 +1,99 @@
+Trobleshooting:
+================
+sudo apt-get autoremove mysql-server mysql-client
+sudo apt-get install mysql-server mysql-client
+
+Resetting the password
+UPDATE mysql.user SET Password=PASSWORD('hadoop')     WHERE User='root';
+
+
+MySql commands:
+==================
+mysql -u root -p --local-infile
+
+mysql> SHOW DATABASES;
+mysql> CREATE DATABASE sqoop;
+mysql> USE sqoop;
+
+mysql> CREATE TABLE pet (name VARCHAR(20), owner VARCHAR(20), species VARCHAR(20), sex CHAR(1), birth DATE, death DATE);
+
+CREATE TABLE pet_export (name VARCHAR(20), owner VARCHAR(20), species VARCHAR(20), sex CHAR(1), birth DATE, death DATE);
+
+
+mysql> DESCRIBE pet;
+
+mysql> LOAD DATA LOCAL INFILE '/home/hadoop/work/sqoop_inputs/pet.txt' INTO TABLE pet;
+
+mysql> select * from pet;
+
+mysql> INSERT INTO pet VALUES ('Puffball','Diane','hamster','f','1999-03-30',NULL);
+
+mysql> DELETE FROM pet;
+
+mysql> UPDATE pet SET birth = '1990-08-31' WHERE name = 'Bowser';
+
+Sqoop commands:
+============================
+sqoop version
+
+sqoop list-databases --connect jdbc:mysql://localhost:3306/ --username root --password hadoop
+
+sqoop list-tables --connect jdbc:mysql://localhost:3306/sqoop --username root --password hadoop
+
+sqoop import-all-tables --connect jdbc:mysql://localhost:3306/sqoop --username root --password hadoop -m 1
+
+sqoop import --connect jdbc:mysql://localhost:3306/sqoop --username root --password hadoop --table pet -m 1
+ 
+sqoop import --connect jdbc:mysql://localhost:3306/sqoop --username root --password hadoop --table pet -m 1  --target-dir /venkat/sqoop-pet-m
+
+sqoop import --connect jdbc:mysql://localhost:3306/sqoop --username root --password hadoop --table pet --split-by name --target-dir /venkat/sqoop-pet
+
+sqoop --options-file /home/hadoop/work/sqoop_inputs/import.txt --table pet --split-by name --target-dir /venkat/sqoop-pet-import
+
+sqoop import --connect jdbc:mysql://localhost:3306/sqoop --username root --password hadoop --table pet --split-by name --columns 'name,owner' --target-dir /venkat/sqoop-pet-columns
+
+sqoop import --connect jdbc:mysql://localhost:3306/sqoop --username root --password hadoop  --query "SELECT name,owner FROM pet where \$CONDITIONS" --split-by name --target-dir /venkat/sqoop-pet-query1
+
+sqoop import --connect jdbc:mysql://localhost:3306/sqoop --username root --password hadoop  --query "SELECT name,owner FROM pet where sex='f' AND \$CONDITIONS" --split-by name --target-dir /venkat/sqoop-pet-query2
+
+sqoop import --connect jdbc:mysql://localhost:3306/sqoop --username root --password hadoop --table pet --split-by name --columns 'name,owner' --where "sex = 'f'" --target-dir /venkat/sqoop-pet-columns-query
+
+sqoop eval --connect jdbc:mysql://localhost:3306/sqoop --username root --password hadoop --query "SELECT name,owner FROM pet where sex='f'"
+
+sqoop import --connect jdbc:mysql://localhost:3306/sqoop --username root --password hadoop --table pet --split-by name --fields-terminated-by '\t' --lines-terminated-by '\n' --target-dir /venkat/sqoop-pet-input
+
+sqoop export --connect jdbc:mysql://localhost:3306/sqoop --username root --password hadoop --table pet_export --input-fields-terminated-by '\t' --input-lines-terminated-by '\n' --export-dir /venkat/sqoop-pet-input
+
+sqoop export --connect jdbc:mysql://localhost:3306/sqoop --username root --password hadoop --table pet_export --input-fields-terminated-by ',' --input-lines-terminated-by '\n' --export-dir /venkat/sqoop-pet-import
+
+sqoop job --create myjob1 -- list-databases --connect jdbc:mysql://localhost:3306/ --username root --password hadoop
+
+sqoop job --create myjob2 -- list-tables --connect jdbc:mysql://localhost:3306/sqoop --username root --password hadoop
+
+sqoop job --list
+
+sqoop job --show myjob1
+
+sqoop job --exec myjob1
+
+sqoop codegen --connect jdbc:mysql://localhost:3306/sqoop --username root --password hadoop --table pet
+
+sqoop create-hive-table --connect jdbc:mysql://localhost:3306/sqoop --username root --password hadoop --table pet --hive-table mypet
+
+sqoop import --connect jdbc:mysql://localhost:3306/sqoop --username root --password hadoop  --table pet --split-by name --fields-terminated-by '\t' --lines-terminated-by '\n' --hive-import --hive-table mypet --target-dir /home/hadoop/work/warehouse/mypet
+
+create external table  mypet1 (name string, owner string, species string, sex string, birth string, death string) row format delimited fields terminated by '\t' lines terminated by '\n';
+
+
+
+
+
+
+
+
+
+
+
+
+
+

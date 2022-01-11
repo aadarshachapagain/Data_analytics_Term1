@@ -1,0 +1,55 @@
+CREATE  TABLE book_xml_temp2( 
+author string,
+title string,
+genre  string,
+price double,
+publish_date string,
+description string
+)
+     ROW FORMAT SERDE 'com.ibm.spss.hive.serde2.xml.XmlSerDe' WITH SERDEPROPERTIES (
+     "column.xpath.author" = "/book/author/text()",
+     "column.xpath.title" = "/book/title/text()",
+     "column.xpath.genre" = "/book/genre/text()",
+     "column.xpath.price_discount" = "/book/price/@discount",
+     "column.xpath.publish_date" = "/book/publish_date/text()",
+     "column.xpath.description" = "/book/description/text()"
+     )
+     STORED AS
+     INPUTFORMAT 'com.ibm.spss.hive.serde2.xml.XmlInputFormat'
+     OUTPUTFORMAT 'org.apache.hadoop.hive.ql.io.IgnoreKeyTextOutputFormat'
+     LOCATION '/user/hive/'
+     TBLPROPERTIES (
+     "xmlinput.start"="<book",
+     "xmlinput.end"="book/>"
+     )
+
+
+  
+create external table book1(
+author string,
+title string,
+genre string,
+price float,
+publish_date date,
+description string
+)
+ROW FORMAT SERDE 'com.ibm.spss.hive.serde2.xml.XmlSerDe';
+WITH SERDEPROPERTIES (
+"column.xpath.author"="/book/author/text()",
+"column.xpath.title"="/book/title/text()",
+"column.xpath.genre"="/book/genre/text()",
+"column.xpath.price"="/book/price/@discount",
+"column.xpath.publish_date"="/book/publish_date/text()",
+"column.xpath.description"="/book/description/text()"
+)
+STORED AS
+INPUTFORMAT 'com.ibm.spss.hive.serde2.xml.XmlInputFormat'
+OUTPUTFORMAT 'org.apache.hadoop.hive.ql.io.IgnoreKeyTextOutputFormat'
+LOCATION '/user/hadoop/'
+TBLPROPERTIES (
+"xmlinput.start"="<book>",
+"xmlinput.end"="</book>"
+);
+
+
+

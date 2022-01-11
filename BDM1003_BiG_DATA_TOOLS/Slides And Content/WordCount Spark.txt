@@ -1,0 +1,180 @@
+
+Spark Maven Application creation Steps:
+=======================================
+
+1. Spark & Scala Installation
+2. Download Eclipse Oxygen
+3. From Eclipse Marketplace download scala and Maven and integrate
+4. Create a Maven Project (com.techno.spark.training)(sparkexamples)
+5. From Configure->Add Scala Nature from 
+6. From Properties-->java Buildpath-->Add a new folder-->Scala (**/*.scala.
+7. Create a Package (com.techno.spark.training.sparkexamples)
+8. Create a Scala Object (WordCount)
+9. Add Pom dependencies for Scala and Spark.
+10. Write a Scala Program
+
+
+
+package com.lambton.spark.training.sparkexamples
+
+import org.apache.spark.SparkConf
+import org.apache.spark.SparkContext
+
+object WordCount {
+	def main(args: Array[String]) {
+	val conf = new SparkConf().setAppName("Word Count").setMaster("local")
+	
+	val sc = new SparkContext(conf)
+	
+	if (args.length < 2) {
+	 println("Missing Arguments !!!")
+	}
+	
+	
+	//Loading textfile into textFile object. (RDD)
+	val textFile = sc.textFile(args(0))
+	
+	// read the line, split the line into words
+	val words = textFile.flatMap(line=> line.split(" "))
+	
+	//Assign Count (1) to each word
+	val counts = words.map(word=>(word,1))
+	
+	//Groupby key and Sum the list of values
+	val wordcount =  counts.reduceByKey(_+_)
+	
+	//sort the result based on a Key
+	val wordcount_sorted = wordcount.sortByKey()
+	//wordcount_sorted.foreach(println)
+
+	//store the output into file system
+	wordcount_sorted.saveAsTextFile(args(1))
+	
+	}
+	}
+	
+
+Pom.xml
+=======
+<dependency>
+    <groupId>org.scala-lang</groupId>
+    <artifactId>scala-library</artifactId>
+    <version>2.11.1</version>
+</dependency>
+
+<dependency>
+    <groupId>org.apache.spark</groupId>
+    <artifactId>spark-core_2.11</artifactId>
+    <version>2.1.1</version>
+</dependency>
+
+=========================================================================================================================================================================
+/home/hadoop/work/input/sampleinput.txt
+	
+sampleinput.txt
+Hi Techno
+How are you doing
+How is everrything
+Nice to see you again
+	
+Passing Arguments
+/home/hadoop/work/input/sampleinput
+/home/hadoop/work/output/wc-op
+	
+	
+	
+
+fs dfs -mkdir 
+	
+spark-submit --class com.lambton.spark.training.sparkexamples.WordCount --master local /home/hadoop/work/samplespark.jar hdfs://localhost:8020/demo/demoinput hdfs://localhost:8020/demo/wc-op
+	
+spark-submit --class com.lambton.spark.training.sparkexamples.WordCount --master local /home/hadoop/work/samplespark.jar home/hadoop/work/input/sampleinput.txt home/hadoop/work/output/wc-jar-op
+
+hdfs://localhost:8020/user/hadoop/sampleinput.txt
+
+
+
+Creating a Jar:
+===============
+	
+Eclipse--> Export--> jar-->samplespark.jar
+	
+/home/hadoop/work/samplespark.jar
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+hdfs dfs -mkdir hdfs://localhost:8020/user/hadoop/sample
+
+hdfs dfs -put /home/hadoop/work/sampleinput.txt hdfs://localhost:8020/user/hadoop/sample
+
+spark-submit --class com.lambton.spark.training.sparkexamples.WordCount --master local /home/hadoop/work/samplespark.jar hdfs://localhost:8020/user/hadoop/sample/sampleinput.txt hdfs://localhost:8020/user/hadoop/wc-jar-op2
+
+==========================================================================================================================================================================
+
+package com.lambton.spark.training.sparkexamples
+
+
+import org.apache.spark.SparkConf
+import org.apache.spark.SparkContext
+
+object WordCount {
+  
+  def main(args: Array[String]) {
+	val conf = new SparkConf().setAppName("Word Count").setMaster("local")
+	
+	val sc = new SparkContext(conf)
+	
+	if (args.length < 2) {
+	 println("Missing Arguments !!!")
+	}
+	
+	
+	//Loading textfile into textFile object. (RDD)
+	val textFile = sc.textFile(args(0))
+	
+	// read the line, split the line into words
+	val words = textFile.flatMap(line=> line.split(" "))
+	
+	//Assign Count (1) to each word
+	val counts = words.map(word=>(word,1))
+	
+	//Groupby key and Sum the list of values
+	val wordcount =  counts.reduceByKey(_+_)
+	
+	//sort the result based on a Key
+	val wordcount_sorted = wordcount.sortByKey()
+	wordcount_sorted.foreach(println)
+
+	//store the output into file system
+	wordcount_sorted.saveAsTextFile(args(1))
+	
+	}
+  
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+	

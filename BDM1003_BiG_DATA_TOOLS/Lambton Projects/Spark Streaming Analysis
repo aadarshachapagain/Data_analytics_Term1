@@ -1,0 +1,95 @@
+
+==========================================================================================================================================================================
+								Latest Tweets Analysis
+==========================================================================================================================================================================
+
+1. spark-shell
+
+2. val latesttweets = sc.textFile("file:///home/venkateshwar/tweets/tweets.txt")
+   latesttweets.saveAsTextFile("hdfs://localhost:8020/user/venkateshwar/cc/tweets.txt")
+
+3. hive
+
+4. create table if not exists latesttweets(tweet_id string, in_reply_to_status_id string, in_reply_to_user_id string, timestamp_cc string, source_cc string, text_cc string, retweeted_status_id string, retweeted_status_user_id string, retweeted_status_timestamp string, expanded_urls string) row format delimited fields terminated by '\t' lines terminated by '\n' stored as textfile;
+
+5. load data inpath '/user/venkateshwar/cc/tweets.txt' overwrite into table latesttweets;
+
+6. Insert Overwrite Local Directory '/home/venkateshwar/cc/hive_inputs/tweets.txt' ROW FORMAT DELIMITED FIELDS TERMINATED BY '\t' Select * from latesttweets;
+
+7. mysql -u root -p --local-infile
+
+8. Create Table latesttweets_export (tweet_id VARCHAR(36), in_reply_to_status_id VARCHAR(36), in_reply_to_user_id VARCHAR(36), timestamp_cc VARCHAR(36), source_cc VARCHAR(36), text_cc VARCHAR(36), retweeted_status_id VARCHAR(36), retweeted_status_user_id VARCHAR(36), retweeted_status_timestamp VARCHAR(36), expanded_urls VARCHAR(36));
+
+9. Load Data Local Infile '/home/venkateshwar/cc/hive_inputs/tweets.txt/000000_0' INTO TABLE latesttweets_export;
+
+10. select * from latesttweets_export;
+
+
+==========================================================================================================================================================================
+
+
+==========================================================================================================================================================================
+							Tweets from where language is English
+==========================================================================================================================================================================spark-1.spark spark-shell --jars spark-streaming-twitter_2.10-1.6.0.jar,twitter4j-stream-4.0.2.jar,twitter4j-core-4.0.2.jar
+import org.apache.spark.streaming.twitter._
+import twitter4j.auth._
+import twitter4j.conf._
+import org.apache.spark.streaming.{Seconds, StreamingContext}
+import org.apache.spark._
+import org.apache.spark.streaming._
+import org.apache.spark.streaming.StreamingContext._
+val ssc = new StreamingContext(sc, Seconds(10))
+val cb = new ConfigurationBuilder
+cb.setDebugEnabled(true).setOAuthConsumerKey("FKNryYEKeCrKzGV7zuZW4EKeN")
+.setOAuthConsumerSecret("x6Y0zcTBOwVxpvekSCnGzbi3NYNrM5b8ZMZRIPI1XRC3pDyOs1")
+.setOAuthAccessToken("31548859-DHbESdk6YoghCLcfhMF88QEFDvEjxbM6Q90eoZTGl")
+.setOAuthAccessTokenSecret("wjcWPvtejZSbp9cgLejUdd6W1MJqFzm5lByUFZl1NYgrV")
+val auth = new OAuthAuthorization(cb.build)
+var z = Array("customercentria", "coolNhot", "spark")
+val tweets = TwitterUtils.createStream(ssc,Some(auth), z)
+val englishTweets = tweets.filter(_.getLang()=="en")
+val status = englishTweets.map(status => status.getText)
+status.print
+ssc.checkpoint("hdfs://localhost:8020/user/venkateshwar/tweet1")
+ssc.start
+ssc.awaitTermination
+
+==========================================================================================================================================================================
+
+
+==========================================================================================================================================================================
+								Twitter Popular Tags
+==========================================================================================================================================================================
+1. check sbt --version
+2. Create sbt package
+3. mkdir twitterstreaming
+4. cd twitterstreaming/
+5. mkdir -p src/main/scala
+6. sudo gedit src/main/scala/TwitterPopularTags.scala
+7. Create a build.sbt file inside the twitterstreaming directory
+8. sudo gedit build.sbt, add the dependancy scripts..
+9. sbt package
+10.Run this spark-submit --class "TwitterPopularTags" --master local[2] target/scala-2.10/twitterstreaming_2.10-1.0.jar
+11. sbt eclipse
+12. Go to Scala IDE , File -> Import
+13. From General option select existing project into workspace option and select the root directory serverlogs.
+14. Now run LogAnalyzer.scala as scala application.
+
+=========================================================================================================================================================================
+
+
+
+import org.apache.spark.streaming.twitter._
+import twitter4j.auth._
+import twitter4j.conf._
+import org.apache.spark.streaming.{Seconds, StreamingContext}
+import org.apache.spark._
+import org.apache.spark.streaming._
+import org.apache.spark.streaming.StreamingContext._
+
+
+
+
+
+
+
